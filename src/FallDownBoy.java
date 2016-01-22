@@ -59,14 +59,16 @@ public class FallDownBoy extends JComponent implements KeyListener {
         return img;
     }
     //Create speed variable 
-    int speed = 1;
+    int speed = 10;
     //Create random number generator for x value
+
     public int randomX() {
         int random = (int) (Math.random() * (600 - 1 + 1)) + 1;
         return random;
     }
     //Create random number generator for y value
-        public int randomY() {
+
+    public int randomY() {
         int random = (int) (Math.random() * (1000000 - 600 + 1)) + 600;
         return random;
     }
@@ -81,7 +83,7 @@ public class FallDownBoy extends JComponent implements KeyListener {
 
         // GAME DRAWING GOES HERE 
 
-        //Make screen white
+        //Make screen black
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, WIDTH, HEIGHT);
         //Draw title 
@@ -92,25 +94,32 @@ public class FallDownBoy extends JComponent implements KeyListener {
             g.fillRect(0, 0, WIDTH, HEIGHT);
         }
 
+
         //Set colour for player
         g.setColor(Color.red);
+        //if collision is true, set colour to black
+        if (collision == true) {
+            g.setColor(Color.BLACK);
+        }
+
         //Draw player
         g.fillRect(player.x, player.y, player.width, player.height);
 
-        //Set colour for blocks
-        g.setColor(Color.WHITE);
-        // go through each block
-        for (Rectangle block : blocks) {
-            // draw the block
-            g.setColor(Color.WHITE);
-            g.fillRect(block.x, block.y, block.width, block.height);
+        //If collision is false draw blocks
+        if (!collision) {
+            // go through each block
+            for (Rectangle block : blocks) {
+                // draw the block
+                g.setColor(Color.WHITE);
+                g.fillRect(block.x, block.y, block.width, block.height);
+            }
         }
         //Draw game over image
         if (collision == true) {
             g.drawImage(gameOver, 65, -40, 768, 614, null);
         }
         //If player leaves screen draw game over image
-        if(player.x >800 || player.x < 0){
+        if (player.x > 800 || player.x < 0) {
             g.drawImage(gameOver, 65, -40, 768, 614, null);
         }
 
@@ -147,11 +156,11 @@ public class FallDownBoy extends JComponent implements KeyListener {
             //if left button has been pressed/held down
             if (left) {
                 //Move left at specified speed
-                moveX = -30;
+                moveX = -10;
                 //if right button has been pressed/held down
             } else if (right) {
                 //Move right at specified speed
-                moveX = 30;
+                moveX = 10;
                 //if no button is being pressed or held
             } else {
                 //No movement
@@ -179,14 +188,17 @@ public class FallDownBoy extends JComponent implements KeyListener {
                 //else do nothing
             } else {
             }
+            //If player leaves screen stop game
+            if (player.x > 800 || player.x < 0) {
+                //Stop player from moving left and right
+                left = false;
+                right = false;
+                //Set variable
+                collision = true;
+            }
             //If restart is pressed, call initialize method
             if (restart == true) {
                 initialize();
-            }
-            //If player leaves screen, end game
-            if(player.x >800 || player.x < 0){
-                left = false;
-                right = false;
             }
 
             // GAME LOGIC ENDS HERE 
@@ -289,10 +301,10 @@ public class FallDownBoy extends JComponent implements KeyListener {
         //Set rectangles back to starting position
         for (int i = 0; i < 10000; i++) {
             Rectangle block = new Rectangle(randomX(), randomY(), 100, 50);
-            while(block.intersects(player)){
+            while (block.intersects(player)) {
                 block = new Rectangle(randomX(), randomY(), 100, 50);
             }
-            
+
             blocks.add(block);
         }
         //Set all booleans to false
@@ -303,6 +315,6 @@ public class FallDownBoy extends JComponent implements KeyListener {
         buttonPressed = false;
         collision = false;
         //Set speed to 1
-        speed = 1;
+        speed = 5;
     }
 }
